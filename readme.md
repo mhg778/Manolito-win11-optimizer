@@ -41,7 +41,7 @@ de verdad: Desarrollo, Gaming y Laboratorios.
 + PS7 Paralelo: Si tienes PowerShell 7+, vuela aniquilando Appx 
   usando multi-threading real (ThrottleLimit 4).
 
----[ NOVEDADES v2.1 ]---------------------------------------------
+---[ NOVEDADES v2.2+ ]---------------------------------------------
 
 + [!] NUEVO Menú Interactivo: Toggles en consola para personalizar
   la ejecución en caliente (100% retrocompatible con PS 5.1).
