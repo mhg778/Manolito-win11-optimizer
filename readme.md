@@ -8,7 +8,7 @@
 ──────────────────────────────────────────────────────────────────
 . . . P R E S E N T S . . .
 
-Program Name : Manolito v2.1 (The Ultimate Edition)
+Program Name : Manolito v2.2.2 (The Ultimate Edition)
 Release Date : 2026
 OS Support   : Windows 11 Education (Builds 22000 - 26100+)
 Protection   : M$ Telemetry, Copilot, Recall, Cloud Bloatware
@@ -63,7 +63,7 @@ de verdad: Desarrollo, Gaming y Laboratorios.
    en caliente al ejecutar.
 3. Abre PowerShell Elevado (Como Administrador).
 4. Ejecuta el modo interactivo:
-   .\manolito.ps1 -Interactive
+   powershell.exe -ExecutionPolicy Bypass -File .\manolito.ps1 -Interactive
 5. Disfruta de un SO silencioso y que responde a ti, no a M$.
 
 ---[ NOTA DEL AUTOR ]---------------------------------------------
