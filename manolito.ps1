@@ -1,6 +1,6 @@
 <# 
 ╔══════════════════════════════════════════════════════════════════╗
-║              Manolito v2.2.2 — Windows 11 Education              ║
+║              Manolito v2.2.4 — Windows 11 Education              ║
 ║       Optimizador modular: dev · gaming · estudio                ║
 ╠══════════════════════════════════════════════════════════════════╣
 ║  Modos     : Lite | DevEdu | Deep | Personalizado | Restore      ║
@@ -16,7 +16,7 @@
 ╚══════════════════════════════════════════════════════════════════╝
 
 .SYNOPSIS
-    Manolito v2.2.2 — Optimizador Windows 11 Education con toggles gaming/admin/DNS/OfflineOS
+    Manolito v2.2.4 — Optimizador Windows 11 Education con toggles gaming/admin/DNS/OfflineOS
 .PARAMETER Mode
     Preset: Lite | DevEdu | Deep | Restore (default: DevEdu)
 .PARAMETER DryRun
@@ -82,7 +82,7 @@ $PSDefaultParameterValues['Out-File:Encoding'] = 'UTF8'
 $PSMajor = $PSVersionTable.PSVersion.Major
 if ($PSMajor -lt 5) {
     $errMsg = "[ERROR] Se requiere PowerShell 5.1 o superior. Detectado: $PSMajor"
-    [Console]::Error.WriteLine($errMsg)
+    # FIX E1b: solo Write-Host para evitar duplicado en consola
     Write-Host $errMsg -ForegroundColor Red
     exit 1
 }
@@ -153,8 +153,8 @@ try {
             "SKUs aceptados: 121 (Education), 122 (Education N).",
             "Abortando."
         )
+        # FIX E1: Write-Host ya muestra en rojo; Error.WriteLine duplicaba cada linea
         foreach ($e in $errLines) {
-            [Console]::Error.WriteLine($e)
             Write-Host $e -ForegroundColor Red
         }
         Exit-Script 1
@@ -437,7 +437,7 @@ try {
         Clear-Host
         $menuText = @"
 ╔══════════════════════════════════════════════════════════════════╗
-║           Manolito v2.2.2 — Optimizador Windows 11 Education     ║
+║           Manolito v2.2.4 — Optimizador Windows 11 Education     ║
 ╠══════════════════════════════════════════════════════════════════╣
 ║  [1] Lite        Estudio basico. Minimo impacto al sistema.      ║
 ║  [2] DevEdu      Dev + gaming + video.  ★ RECOMENDADO            ║
@@ -560,7 +560,7 @@ try {
     $skipLabel = if ($ctx.SkipList.Count -gt 0) { " | Skip: $($ctx.SkipList -join ',')" } else { "" }
     $psLabel = if ($PS7Plus) { "PS7+ (paralelo)" } else { "PS$PSMajor" }
     Write-Log "================================================================" "Green"
-    Write-Log "Manolito v2.2.2 — Modo: $Mode$dryLabel$skipLabel | $psLabel" "Green"
+    Write-Log "Manolito v2.2.4 — Modo: $Mode$dryLabel$skipLabel | $psLabel" "Green"
     Write-Log "OS: $OSCaption  |  Build: $WinBuild" "DarkGray"
     Write-Log "Log: $LogFile  |  Transcript: $TranscriptPath" "DarkGray"
     if (-not $DryRun.IsPresent) { Write-Log "Backup registro: $BackupDir" "DarkGray" }
@@ -839,8 +839,13 @@ try {
             if (Test-Path $od) {
                 Write-Log "   Desinstalando OneDrive ($od)..." "Yellow"
                 $proc = Start-Process $od "/uninstall" -NoNewWindow -PassThru -Wait
-                if ($proc.ExitCode -ne 0) { Write-Log "   [WARN] Exit code $($proc.ExitCode)" "DarkYellow" }
-                else { Write-Log "   OneDrive desinstalado." "DarkGray" }
+                # FIX D3: -2147219813 (0x8024801B) = cleanup parcial con sesion activa
+                # OneDrive SÍ se desinstala — es un falso negativo conocido del uninstaller
+                if ($proc.ExitCode -in @(0, -2147219813)) {
+                    Write-Log "   OneDrive desinstalado." "DarkGray"
+                } else {
+                    Write-Log "   [WARN] OneDrive exit code $($proc.ExitCode)." "DarkYellow"
+                }
                 break
             }
         }
@@ -997,8 +1002,10 @@ try {
                 # FIX C1-Prefetch: mismo patron seguro que el bucle principal
                 $moPref = Get-ChildItem $prefetchPath -Force -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue
                 $pbefore = if ($null -ne $moPref -and $null -ne $moPref.Sum) { [long]$moPref.Sum } else { 0L }
+                # FIX D1: -Recurse para ReadyBoot (subdirectorio); -Confirm:$false elimina
+                # el prompt interactivo "tiene elementos secundarios" en PS5.1
                 Get-ChildItem $prefetchPath -Force -ErrorAction SilentlyContinue |
-                    Remove-Item -Force -ErrorAction SilentlyContinue
+                    Remove-Item -Recurse -Force -Confirm:$false -ErrorAction SilentlyContinue
                 Write-Log "   Prefetch: ~$([math]::Round(($pbefore/1MB),1)) MB liberados (apps tardaran mas en 1er arranque)." "DarkGray"
             }
         }
@@ -1121,7 +1128,8 @@ try {
             if ($optWindhawk) { $apps += "RamenSoftware.Windhawk" }
             foreach ($app in $apps) {
                 Write-Log "   Instalando $app via winget..." "Yellow"
-                $proc = Start-Process "winget" -ArgumentList @("install","--id",$app,"--exact","--silent","--accept-package-agreements","--accept-source-agreements") -NoNewWindow -PassThru -Wait
+                # FIX D2: --source winget omite msstore (falla SSL en proxies corporativos: 0x8a15005e)
+                $proc = Start-Process "winget" -ArgumentList @("install","--id",$app,"--exact","--silent","--accept-package-agreements","--accept-source-agreements","--source","winget") -NoNewWindow -PassThru -Wait
                 # FIX C3b: deteccion especifica de error SSL de proxy corporativo
                 if ($proc.ExitCode -eq -1978335138 -or $proc.ExitCode -eq 0x8A15005E) {
                     Write-Log "   [WARN] $app fallo: error SSL (¿proxy corporativo? Intenta: winget settings --enable ProxyBypass)." "DarkYellow"
@@ -1233,6 +1241,8 @@ try {
     Exit-Script 0
 
 } finally {
-    Stop-Transcript -ErrorAction SilentlyContinue
+    # FIX E2: en PS5.1 Stop-Transcript ignora -ErrorAction SilentlyContinue
+    # si no hay transcripcion activa — necesita try/catch explicito
+    try { Stop-Transcript } catch {}
     try { if ($_mutex -and $acquired) { $_mutex.ReleaseMutex() } } catch {}
 }
