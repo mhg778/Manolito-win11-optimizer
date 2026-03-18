@@ -7,7 +7,7 @@
     Es software libre: puedes redistribuirlo y/o modificarlo bajo los terminos
     de la Licencia Publica General GNU publicada por la Free Software Foundation.
 
-    ⚠️  ADVERTENCIA DE USO COMERCIAL (DOBLE LICENCIA):
+    [!]  ADVERTENCIA DE USO COMERCIAL (DOBLE LICENCIA):
     El uso de este software en entornos corporativos, empresariales, o por parte
     de Proveedores de Servicios Gestionados (MSP) con fines lucrativos esta sujeto
     a las estrictas obligaciones de la GPLv3 (liberacion de codigo fuente derivado).
@@ -16,23 +16,23 @@
 #>
 
 <# 
-╔══════════════════════════════════════════════════════════════════╗
-║              Manolito v2.4-fixed — Windows 11 Education          ║
-║       Optimizador modular: dev · gaming · estudio                ║
-╠══════════════════════════════════════════════════════════════════╣
-║  Modos     : Lite | DevEdu | Deep | Personalizado | Restore      ║
-║  DryRun    : simula todos los cambios sin aplicar nada           ║
-║  Skip      : -Skip HyperV SSD AdminTools (secciones separadas)   ║
-║  Gaming    : -GamingMode (conserva Xbox + optimizaciones gaming) ║
-║  DNS       : -SetSecureDNS (1.1.1.1 + 9.9.9.9)                   ║
-║  Interac.  : -Interactive (menu + sub-menu toggles)              ║
-╠══════════════════════════════════════════════════════════════════╣
-║  Ejemplos  : .\manolito.ps1 -Interactive                         ║
-║              .\manolito.ps1 -Mode Deep -GamingMode -SetSecureDNS ║
-╚══════════════════════════════════════════════════════════════════╝
++==================================================================+
+|              Manolito v2.4-fixed -- Windows 11 Education         |
+|       Optimizador modular: dev * gaming * estudio                |
++==================================================================+
+|  Modos     : Lite | DevEdu | Deep | Personalizado | Restore      |
+|  DryRun    : simula todos los cambios sin aplicar nada           |
+|  Skip      : -Skip HyperV SSD AdminTools (secciones separadas)   |
+|  Gaming    : -GamingMode (conserva Xbox + optimizaciones gaming) |
+|  DNS       : -SetSecureDNS (1.1.1.1 + 9.9.9.9)                   |
+|  Interac.  : -Interactive (menu + sub-menu toggles)              |
++==================================================================+
+|  Ejemplos  : .\manolito.ps1 -Interactive                         |
+|              .\manolito.ps1 -Mode Deep -GamingMode -SetSecureDNS |
++==================================================================+
 
 .SYNOPSIS
-    Manolito v2.4 — Optimizador Windows 11 Education con toggles gaming/admin/DNS/OfflineOS
+    Manolito v2.4 -- Optimizador Windows 11 Education con toggles gaming/admin/DNS/OfflineOS
 .PARAMETER Mode
     Preset: Lite | DevEdu | Deep | Restore (default: DevEdu)
 .PARAMETER DryRun
@@ -42,13 +42,13 @@
     Activation,DeKMS,Updates,Defender,HyperV,Bloatware,OneDrive,Xbox,Power,UI,
     Telemetry,SSD,Privacy,Cleanup,OptionalFeatures,DiskSpace,ExplorerPerf,DevEnv,AdminTools
 .PARAMETER GamingMode
-    Conserva Xbox + optimizaciones gaming (HAGS, mouse latency). Desactiva desgamificación.
+    Conserva Xbox + optimizaciones gaming (HAGS, mouse latency). Desactiva desgamificacion.
 .PARAMETER SetSecureDNS
-    Configura DNS 1.1.1.1 + 9.9.9.9 en adaptadores físicos Up.
+    Configura DNS 1.1.1.1 + 9.9.9.9 en adaptadores fisicos Up.
 .PARAMETER InstallWindhawk
     Instala Windhawk (Gestor de mods de UI) via winget.
 .PARAMETER SkipAdminTools
-    Omite instalación de herramientas sysadmin via winget.
+    Omite instalacion de herramientas sysadmin via winget.
 .PARAMETER Interactive
     Menu interactivo con sub-menu de toggles.
 #>
@@ -96,12 +96,12 @@ $script:UseSetSecureDNS = $SetSecureDNS.IsPresent
 $script:UseInstallWindhawk = $InstallWindhawk.IsPresent
 
 
-#region ── CONFIGURACION DE USUARIO ───────────────────────────────────────────
-# LICENCIA WINDOWS — introduce tu clave aquí o usa el prompt interactivo
+#region -- CONFIGURACION DE USUARIO -------------------------------------------
+# LICENCIA WINDOWS -- introduce tu clave aqui o usa el prompt interactivo
 $script:ProductKey = "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
 #endregion
 
-#region ── BOOTSTRAP ──────────────────────────────────────────────────────────
+#region -- BOOTSTRAP ----------------------------------------------------------
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $PSDefaultParameterValues['Out-File:Encoding'] = 'UTF8'
 
@@ -141,7 +141,7 @@ function Exit-Script {
     exit $Code  # finally{} siempre libera mutex + Stop-Transcript
 }
 
-# Mutex — $_mutex y $acquired preinicializados para garantizar finally{} seguro
+# Mutex -- $_mutex y $acquired preinicializados para garantizar finally{} seguro
 $_mutex   = $null
 $acquired = $false
 
@@ -374,7 +374,7 @@ try {
         }
     }
 
-    # FIX #9/#10/#30: try/catch por item — SilentlyContinue no captura terminating errors
+    # FIX #9/#10/#30: try/catch por item -- SilentlyContinue no captura terminating errors
     function Test-KMSValueIrregular {
         param([string]$Value)
         if ([string]::IsNullOrWhiteSpace($Value)) { return $false }
@@ -494,17 +494,17 @@ try {
     if ($Interactive.IsPresent) {
         Clear-Host
         $menuText = @"
-╔══════════════════════════════════════════════════════════════════╗
-║           Manolito v2.4 — Optimizador Windows 11 Education       ║
-╠══════════════════════════════════════════════════════════════════╣
-║  [1] Lite        Estudio basico. Minimo impacto al sistema.      ║
-║  [2] DevEdu      Dev + gaming + video.  ★ RECOMENDADO            ║
-║  [3] Deep        Maxima limpieza. Incluye DISM (irreversible).   ║
-║  [4] Personalizado  Elige que secciones omitir.                  ║
-║  [5] DryRun      Simular DevEdu sin aplicar cambios.             ║
-║  [6] Restore     Revertir cambios criticos al estado original.   ║
-║  [0] Salir                                                       ║
-╚══════════════════════════════════════════════════════════════════╝
++==================================================================+
+|           Manolito v2.4 -- Optimizador Windows 11 Education      |
++==================================================================+
+|  [1] Lite        Estudio basico. Minimo impacto al sistema.      |
+|  [2] DevEdu      Dev + gaming + video.  * RECOMENDADO            |
+|  [3] Deep        Maxima limpieza. Incluye DISM (irreversible).   |
+|  [4] Personalizado  Elige que secciones omitir.                  |
+|  [5] DryRun      Simular DevEdu sin aplicar cambios.             |
+|  [6] Restore     Revertir cambios criticos al estado original.   |
+|  [0] Salir                                                       |
++==================================================================+
 "@
         $menuDone = $false
         do {
@@ -549,14 +549,14 @@ try {
             do {
                 Clear-Host
                 $toggleText = @"
-╔════════════════════════════════ TOGGLES ═══════════════════════════════╗
-║  [1] Instalar Kit Sysadmin (Winget)    : [$(if ($optAdminTools) {'X'} else {' '})] SI / [ ] NO               ║
-║  [2] Desgamificar (Eliminar Xbox)      : [$(if ($optDesgamificar) {'X'} else {' '})] SI / [ ] NO               ║
-║  [3] Aplicar DNS Seguras (1.1.1.1)     : [$(if ($optDNS) {'X'} else {' '})] SI / [ ] NO               ║
-║  [4] Instalar Windhawk (Mod Manager UI): [$(if ($optWindhawk) {'X'} else {' '})] SI / [ ] NO               ║
-║  [5] Limpiar activador KMS (DeKMS)     : [$(if ($optDeKMS) {'X'} else {' '})] SI / [ ] NO               ║
-║  [0] CONFIRMAR Y EJECUTAR                                              ║
-╚════════════════════════════════════════════════════════════════════════╝
++================================ TOGGLES ===============================+
+|  [1] Instalar Kit Sysadmin (Winget)    : [$(if ($optAdminTools) {'X'} else {' '})] SI / [ ] NO               |
+|  [2] Desgamificar (Eliminar Xbox)      : [$(if ($optDesgamificar) {'X'} else {' '})] SI / [ ] NO               |
+|  [3] Aplicar DNS Seguras (1.1.1.1)     : [$(if ($optDNS) {'X'} else {' '})] SI / [ ] NO               |
+|  [4] Instalar Windhawk (Mod Manager UI): [$(if ($optWindhawk) {'X'} else {' '})] SI / [ ] NO               |
+|  [5] Limpiar activador KMS (DeKMS)     : [$(if ($optDeKMS) {'X'} else {' '})] SI / [ ] NO               |
+|  [0] CONFIRMAR Y EJECUTAR                                              |
++========================================================================+
 "@
                 Write-Host $toggleText -ForegroundColor Cyan
                 $toggleChoice = Read-Host "Elige [0-5]"
@@ -592,7 +592,7 @@ try {
     # E04: Check reboot ANTES del backup para evitar falso positivo
     # (reg export genera PendingFileRenameOperations que se detectarian como reboot pendiente)
     if ($Mode -ne "Restore" -and (Test-PendingReboot)) {
-        Write-Warning "[⚠️] Hay un reinicio pendiente detectado. Reinicia antes de continuar."
+        Write-Warning "[[!]] Hay un reinicio pendiente detectado. Reinicia antes de continuar."
         $continueAny = Read-Host "Continuar de todos modos? [s/N]"
         if ($continueAny -notmatch "^[sS]$") { Exit-Script 2 }
     }
@@ -613,7 +613,7 @@ try {
     }
 
     if (Test-AVInterference) {
-        Write-Warning "[⚠️] Defender RealTime o EDR detectado. Algunas operaciones pueden fallar."
+        Write-Warning "[[!]] Defender RealTime o EDR detectado. Algunas operaciones pueden fallar."
     }
 
     if (-not $script:IsDryRun) {
@@ -626,7 +626,7 @@ try {
     $skipLabel = if ($ctx.SkipList.Count -gt 0) { " | Skip: $($ctx.SkipList -join ',')" } else { "" }
     $psLabel = if ($PS7Plus) { "PS7+ (paralelo)" } else { "PS$PSMajor" }
     Write-Log "================================================================" "Green"
-    Write-Log "Manolito v2.4-fixed — Modo: $Mode$dryLabel$skipLabel | $psLabel" "Green"
+    Write-Log "Manolito v2.4-fixed -- Modo: $Mode$dryLabel$skipLabel | $psLabel" "Green"
     Write-Log "Licencia: GNU GPLv3 (gratis uso personal/educativo | uso comercial requiere acuerdo)" "Yellow"
     Write-Log "OS: $OSCaption  |  Build: $WinBuild" "DarkGray"
     Write-Log "Log: $LogFile  |  Transcript: $TranscriptPath" "DarkGray"
@@ -719,11 +719,11 @@ try {
     # FIX #5: Confirmacion obligatoria antes de restaurar
     if ($Mode -eq "Restore") {
         Write-Host ""
-        Write-Host "╔══════════════════════════════════════════════════════════╗" -ForegroundColor Yellow
-        Write-Host "║  ⚠  RESTAURACION AL ESTADO WINDOWS POR DEFECTO          ║" -ForegroundColor Yellow
-        Write-Host "║  Revertira: WU, Telemetria, Servicios, DNS, Edge, etc.   ║" -ForegroundColor Yellow
-        Write-Host "║  Las apps desinstaladas (bloatware/OneDrive) NO vuelven. ║" -ForegroundColor Yellow
-        Write-Host "╚══════════════════════════════════════════════════════════╝" -ForegroundColor Yellow
+        Write-Host "+==========================================================+" -ForegroundColor Yellow
+        Write-Host "|  [!]  RESTAURACION AL ESTADO WINDOWS POR DEFECTO         |" -ForegroundColor Yellow
+        Write-Host "|  Revertira: WU, Telemetria, Servicios, DNS, Edge, etc.   |" -ForegroundColor Yellow
+        Write-Host "|  Las apps desinstaladas (bloatware/OneDrive) NO vuelven. |" -ForegroundColor Yellow
+        Write-Host "+==========================================================+" -ForegroundColor Yellow
         $confirmRestore = Read-Host "Confirmar restauracion? [s/N]"
         if ($confirmRestore -notmatch "^[sS]$") {
             Write-Log "Restauracion cancelada por el usuario." "DarkYellow"
@@ -752,12 +752,12 @@ try {
 
 #endregion
 
-#region ── MÓDULOS 0-15 (existentes con fixes) ──────────────────────────────
+#region -- MODULOS 0-15 (existentes con fixes) ------------------------------
 
-    # MÓDULO DeKMS: Limpieza completa activadores KMS irregulares
+    # MODULO DeKMS: Limpieza completa activadores KMS irregulares
     # Cubre: MAS, KMSpico, HEU KMS, kms.digiboy.ir, 127.0.0.2, vlmcsd
     # NO toca License State. Sin /upk ni /rearm.
-    # KMS corporativo (RFC1918 / hostname interno) → preservado.
+    # KMS corporativo (RFC1918 / hostname interno) -> preservado.
     function Invoke-ModuleDeKMS {
         $currentKMS = ""
         $dlvRaw = & cscript //Nologo "$env:SystemRoot\System32\slmgr.vbs" /dlv 2>&1 | Out-String
@@ -942,7 +942,7 @@ try {
         $slmgr      = "$env:SystemRoot\System32\slmgr.vbs"
         $licInfo    = & cscript.exe //Nologo $slmgr /dlv 2>&1 | Out-String
         $yaActivado = $licInfo -match "License Status:\s*Licensed" -or $licInfo -match "Estado de licencia:\s*Con licencia"
-        # C3: si DeKMS limpió un activador pirata, forzar reactivación con clave MAK
+        # C3: si DeKMS limpio un activador pirata, forzar reactivacion con clave MAK
         if ($yaActivado -and -not $ctx.DeKMSCleaned) {
             $channel = if ($licInfo -match "License Description\s*:\s*(.+)") { $Matches[1].Trim() } else { "desconocido" }
             Write-Log "   Windows ya activado legitimamente. Canal: $channel" "DarkGray"
@@ -973,7 +973,7 @@ try {
             } catch { $actNetOk = $false }
             if (-not $actNetOk) { throw "Sin conectividad a activation.sls.microsoft.com:443." }
         } else {
-            Write-Log "   KMS local ($kmsHost) — check WAN omitido." "DarkGray"
+            Write-Log "   KMS local ($kmsHost) -- check WAN omitido." "DarkGray"
         }
         Write-Log "   Activando (timeout 15 s)..." "Yellow"
         $tmpOut  = Join-Path $env:TEMP "slmgr_ato_$PID.txt"
@@ -1004,7 +1004,7 @@ try {
         Invoke-Step "Activation" "Activando Windows..." { Invoke-ModuleActivation }
 
 
-    # MÓDULO OfflineOS: Bloqueo de identidad cloud — siempre ejecutado salvo -Skip OfflineOS
+    # MODULO OfflineOS: Bloqueo de identidad cloud -- siempre ejecutado salvo -Skip OfflineOS
     function Invoke-ModuleOfflineOS {
         if ($IsProSku -or $IsEnterpriseSku) {
             Write-Log "   [OfflineOS] Pro/Enterprise: restricciones MSA omitidas." "Yellow"
@@ -1096,7 +1096,7 @@ try {
             "*EsportsGameService*",            # Microsoft Gaming extras
             "*MSN*"                            # MSN portal apps
         )
-        # Unir según edicion detectada
+        # Unir segun edicion detectada
         $bloatware = $bloatware_edu
         if ($IsProSku -or $IsEnterpriseSku) {
             $bloatware = $bloatware_edu + $bloatware_pro
@@ -1117,7 +1117,7 @@ try {
             foreach ($pkg in $pkgs) {
                 try   { $pkg | Remove-AppxPackage -AllUsers -ErrorAction Stop }
                 catch {
-                    # 0x80070032 = SystemApp protegida, no eliminable — silenciar
+                    # 0x80070032 = SystemApp protegida, no eliminable -- silenciar
                     if ($_.Exception.Message -notmatch "0x80070032") {
                         $lf  = $using:LogFile
                         $msg = "[$(Get-Date -f 'HH:mm:ss')] [WARN-Parallel] $($pkg.Name): $($_.Exception.Message -replace "`n"," ")"
@@ -1152,7 +1152,7 @@ try {
                 Write-Log "   Desinstalando OneDrive ($od)..." "Yellow"
                 $proc = Start-Process $od "/uninstall" -NoNewWindow -PassThru -Wait
                 # FIX D3: -2147219813 (0x8024801B) = cleanup parcial con sesion activa
-                # OneDrive SÍ se desinstala — es un falso negativo conocido del uninstaller
+                # OneDrive SI se desinstala -- es un falso negativo conocido del uninstaller
                 if ($proc.ExitCode -in @(0, -2147219813)) {
                     Write-Log "   OneDrive desinstalado." "DarkGray"
                 } else {
@@ -1174,7 +1174,7 @@ try {
             # Gaming mode: conservar Xbox + optimizaciones
             Write-Log "   Gaming mode activado: conservando Xbox + optimizaciones." "Yellow"
             Set-RegistryValue "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" "HwSchMode" 2  # HAGS
-            Set-RegistryValue "HKCU:\Control Panel\Mouse" "MouseSpeed" "0" "String"  # Latencia ratón
+            Set-RegistryValue "HKCU:\Control Panel\Mouse" "MouseSpeed" "0" "String"  # Latencia raton
         } else {
             # Desgamificar por defecto
             Remove-AppxSafe "*Xbox*"
@@ -1193,11 +1193,11 @@ try {
     Invoke-Step "Power" "Optimizando energia..." { Invoke-ModulePower }
 
     function Invoke-ModuleUI {
-        # Menu contextual clásico
+        # Menu contextual clasico
         Set-RegistryValue "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" "(Default)" "" "String"
         Set-RegistryValue $REG_EXPLORER_ADV "TaskbarAl" 0
         Set-RegistryValue "HKLM:\SOFTWARE\Policies\Microsoft\Dsh" "AllowNewsAndInterests" 0
-        # FIX C5: En 24H2 TaskbarDa puede ser REG_BINARY — Remove+NewItemProperty evita
+        # FIX C5: En 24H2 TaskbarDa puede ser REG_BINARY -- Remove+NewItemProperty evita
         # error "operacion no valida" al sobreescribir un tipo de dato distinto
         if ($script:IsDryRun) {
             Write-Log "  [DRY-RUN] Reg: TaskbarDa = 0 (Widgets off)" "DarkGray"
@@ -1416,7 +1416,7 @@ try {
     }
     Invoke-Step "DevEnv" "Configurando entorno desarrollo..." { Invoke-ModuleDevEnv }
 
-    # MÓDULO 16: Admin Tools (winget + features de red nativas)
+    # MODULO 16: Admin Tools (winget + features de red nativas)
     function Invoke-ModuleAdminTools {
         # FIX #13: Verificar red antes de winget (evita timeout 30-90s por app sin red)
         $wingetNetOk = $false
@@ -1433,7 +1433,7 @@ try {
         } elseif (-not $wingetNetOk) {
             Write-Log "   [SKIP] Sin conectividad a winget.azureedge.net:443. Instala apps manualmente." "DarkYellow"
         } else {
-            # FIX C3: resetear fuentes winget — codigo -1978335157 indica indice corrupto
+            # FIX C3: resetear fuentes winget -- codigo -1978335157 indica indice corrupto
             Write-Log "   Reseteando fuentes de winget (puede tardar 10-15s)..." "DarkGray"
             & winget source reset --force 2>&1 | Out-Null
             & winget source update 2>&1 | Out-Null
@@ -1445,7 +1445,7 @@ try {
                 $proc = Start-Process "winget" -ArgumentList @("install","--id",$app,"--exact","--silent","--accept-package-agreements","--accept-source-agreements","--source","winget") -NoNewWindow -PassThru -Wait
                 # FIX C3b: deteccion especifica de error SSL de proxy corporativo
                 if ($proc.ExitCode -eq -1978335138 -or $proc.ExitCode -eq 0x8A15005E) {
-                    Write-Log "   [WARN] $app fallo: error SSL (¿proxy corporativo? Intenta: winget settings --enable ProxyBypass)." "DarkYellow"
+                    Write-Log "   [WARN] $app fallo: error SSL (proxy corporativo? Intenta: winget settings --enable ProxyBypass)." "DarkYellow"
                 } elseif ($proc.ExitCode -eq 3010) {
                     Write-Log "   $app instalado. Reinicio requerido (3010)." "Yellow"
                     $ctx.RebootRequired.Add("AdminTools")
@@ -1483,7 +1483,7 @@ try {
     }
     Invoke-Step "AdminTools" "Instalando kit sysadmin (winget + features de red)..." { Invoke-ModuleAdminTools }
 
-    # MÓDULO 17: DNS seguros (Cloudflare 1.1.1.1 + Quad9 9.9.9.9)
+    # MODULO 17: DNS seguros (Cloudflare 1.1.1.1 + Quad9 9.9.9.9)
     function Invoke-ModuleDNS {
         if (-not $script:UseSetSecureDNS) {
             Write-Log "   [DNS] Toggle inactivo. Omitiendo." "DarkGray"
@@ -1500,7 +1500,7 @@ try {
             $v6 = (Get-DnsClientServerAddress -InterfaceAlias $a.Name -AddressFamily IPv6 -ErrorAction SilentlyContinue).ServerAddresses
             $ctx.DNSBackup[$a.Name] = @{ IPv4 = @($v4 | Where-Object { $_ }); IPv6 = @($v6 | Where-Object { $_ }) }
         }
-        # B08: IPv4 + IPv6 (Cloudflare + Quad9) — evita fuga via AAAA
+        # B08: IPv4 + IPv6 (Cloudflare + Quad9) -- evita fuga via AAAA
         $dnsServers = @("1.1.1.1","9.9.9.9","2606:4700:4700::1111","2620:fe::fe")
         foreach ($a in $adapters) {
             Write-Log "   DNS en $($a.Name)..." "Yellow"
@@ -1512,7 +1512,7 @@ try {
 
 #endregion
 
-#region ── FINALIZACION ──────────────────────────────────────────────────────
+#region -- FINALIZACION ------------------------------------------------------
 
     # Restart Explorer condicional (fix L2)
     if (-not (Test-Skip "UI") -or -not (Test-Skip "ExplorerPerf")) {
@@ -1546,11 +1546,11 @@ try {
 
     if ($script:IsDryRun) {
         Write-Log "" "White"
-        Write-Log "═══════════════ RESUMEN DRY-RUN ═══════════════" "Cyan"
+        Write-Log "=============== RESUMEN DRY-RUN ===============" "Cyan"
         Write-Log "Acciones simuladas: $($ctx.DryRunActions.Count)" "Cyan"
-        Write-Log "───────────────────────────────────────────────" "DarkGray"
+        Write-Log "-----------------------------------------------" "DarkGray"
         $ctx.DryRunActions | ForEach-Object { Write-Log $_ "DarkGray" }
-        Write-Log "═══════════════════════════════════════════════" "Cyan"
+        Write-Log "===============================================" "Cyan"
         Write-Log "[DRY-RUN] Ningun cambio aplicado." "Green"
         Exit-Script 0
     }
@@ -1572,7 +1572,7 @@ try {
 
 } finally {
     # FIX E2: en PS5.1 Stop-Transcript ignora -ErrorAction SilentlyContinue
-    # si no hay transcripcion activa — necesita try/catch explicito
+    # si no hay transcripcion activa -- necesita try/catch explicito
     try { Stop-Transcript } catch {}
     try { if ($_mutex -and $acquired) { $_mutex.ReleaseMutex() } } catch {}
 }
