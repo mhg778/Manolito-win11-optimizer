@@ -17,7 +17,7 @@
 
 <# 
 ╔══════════════════════════════════════════════════════════════════╗
-║              Manolito v2.4 — Windows 11 Education                ║
+║              Manolito v2.4-fixed — Windows 11 Education          ║
 ║       Optimizador modular: dev · gaming · estudio                ║
 ╠══════════════════════════════════════════════════════════════════╣
 ║  Modos     : Lite | DevEdu | Deep | Personalizado | Restore      ║
@@ -198,7 +198,7 @@ try {
         foreach ($e in $errLines) { Write-Host $e -ForegroundColor Red }
         Exit-Script 1
     }
-    Write-Log "Edicion detectada: $OSCaption [$SKULabel] Build $WinBuild" "DarkGray"
+    Write-Host "[Bootstrap] Edicion detectada: $OSCaption [$SKULabel] Build ${WinBuild}" -ForegroundColor DarkGray
 
     # FIX #23: Logs/backups centralizados en %USERPROFILE%\manolito\
     # FIX #23 (corregido): Documents\Manolito, no raiz de perfil
@@ -498,7 +498,7 @@ try {
 ║           Manolito v2.4 — Optimizador Windows 11 Education       ║
 ╠══════════════════════════════════════════════════════════════════╣
 ║  [1] Lite        Estudio basico. Minimo impacto al sistema.      ║
-║  [2] DevEdu      Dev + gaming + video.  ★ RECOMENDADO ★         ║
+║  [2] DevEdu      Dev + gaming + video.  ★ RECOMENDADO            ║
 ║  [3] Deep        Maxima limpieza. Incluye DISM (irreversible).   ║
 ║  [4] Personalizado  Elige que secciones omitir.                  ║
 ║  [5] DryRun      Simular DevEdu sin aplicar cambios.             ║
@@ -589,6 +589,14 @@ try {
     # Aplicar flags CLI como skips
     if ($SkipAdminTools.IsPresent) { Add-Skip "AdminTools" }
     
+    # E04: Check reboot ANTES del backup para evitar falso positivo
+    # (reg export genera PendingFileRenameOperations que se detectarian como reboot pendiente)
+    if ($Mode -ne "Restore" -and (Test-PendingReboot)) {
+        Write-Warning "[⚠️] Hay un reinicio pendiente detectado. Reinicia antes de continuar."
+        $continueAny = Read-Host "Continuar de todos modos? [s/N]"
+        if ($continueAny -notmatch "^[sS]$") { Exit-Script 2 }
+    }
+
     # FIX #7: No backup en Restore
     if ($script:IsDryRun) {
         Write-Log "[DRY-RUN] Backup de registro omitido (sin cambios en simulacion)." "DarkYellow"
@@ -596,13 +604,6 @@ try {
         Write-Log "[INFO] Backup omitido en modo Restore." "DarkYellow"
     } else {
         Backup-Registry
-    }
-
-    # FIX #16: Restore puede ejecutarse con reboot pendiente
-    if ($Mode -ne "Restore" -and (Test-PendingReboot)) {
-        Write-Warning "[⚠️] Hay un reinicio pendiente detectado. Reinicia antes de continuar."
-        $continueAny = Read-Host "Continuar de todos modos? [s/N]"
-        if ($continueAny -notmatch "^[sS]$") { Exit-Script 2 }
     }
 
     # Fix B2: Safe Mode correcto
@@ -625,7 +626,7 @@ try {
     $skipLabel = if ($ctx.SkipList.Count -gt 0) { " | Skip: $($ctx.SkipList -join ',')" } else { "" }
     $psLabel = if ($PS7Plus) { "PS7+ (paralelo)" } else { "PS$PSMajor" }
     Write-Log "================================================================" "Green"
-    Write-Log "Manolito v2.4 — Modo: $Mode$dryLabel$skipLabel | $psLabel" "Green"
+    Write-Log "Manolito v2.4-fixed — Modo: $Mode$dryLabel$skipLabel | $psLabel" "Green"
     Write-Log "Licencia: GNU GPLv3 (gratis uso personal/educativo | uso comercial requiere acuerdo)" "Yellow"
     Write-Log "OS: $OSCaption  |  Build: $WinBuild" "DarkGray"
     Write-Log "Log: $LogFile  |  Transcript: $TranscriptPath" "DarkGray"
@@ -719,7 +720,7 @@ try {
     if ($Mode -eq "Restore") {
         Write-Host ""
         Write-Host "╔══════════════════════════════════════════════════════════╗" -ForegroundColor Yellow
-        Write-Host "║  ⚠  RESTAURACION AL ESTADO WINDOWS POR DEFECTO  ⚠       ║" -ForegroundColor Yellow
+        Write-Host "║  ⚠  RESTAURACION AL ESTADO WINDOWS POR DEFECTO          ║" -ForegroundColor Yellow
         Write-Host "║  Revertira: WU, Telemetria, Servicios, DNS, Edge, etc.   ║" -ForegroundColor Yellow
         Write-Host "║  Las apps desinstaladas (bloatware/OneDrive) NO vuelven. ║" -ForegroundColor Yellow
         Write-Host "╚══════════════════════════════════════════════════════════╝" -ForegroundColor Yellow
@@ -785,7 +786,7 @@ try {
         if ($currentKMS) {
             Write-Log "   AVISO: Servidor KMS a limpiar: $currentKMS" "Yellow"
             Write-Log "   License State NO se toca. Equipo sigue activo en grace period." "DarkGray"
-            if ($WinBuild -ge 26040) { Write-Log "   Build $WinBuild: grace period KMS no renovable. Necesitaras clave MAK." "Yellow" }
+            if ($WinBuild -ge 26040) { Write-Log "   Build ${WinBuild}: grace period KMS no renovable. Necesitaras clave MAK." "Yellow" }
             $isUnattended = $Force.IsPresent -or (-not [Environment]::UserInteractive) -or ($host.Name -ne "ConsoleHost")
             if (-not $isUnattended) {
                 $confirm = Read-Host "   Confirmar limpieza KMS? [s/N]"
@@ -806,8 +807,9 @@ try {
             $cleaned = 0
 
             $rootP = Get-ItemProperty -LiteralPath $SPP -ErrorAction SilentlyContinue
-            if ($null -ne $rootP -and $null -ne $rootP.KeyManagementServiceName) {
-                if (Test-KMSValueIrregular $rootP.KeyManagementServiceName) {
+            if ($null -ne $rootP -and $null -ne $rootP.PSObject.Properties['KeyManagementServiceName']) {
+                $kmsValRoot = $rootP.PSObject.Properties['KeyManagementServiceName'].Value
+                if (Test-KMSValueIrregular $kmsValRoot) {
                     try {
                         $rk = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey(
                             "SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform",
@@ -823,14 +825,15 @@ try {
                         Remove-ItemProperty -LiteralPath $SPP -Name "KeyManagementServiceName" -ErrorAction Stop
                         Remove-ItemProperty -LiteralPath $SPP -Name "KeyManagementServicePort" -ErrorAction SilentlyContinue
                         $cleaned++
-                    } catch { Write-Log "   [DeKMS] HKLM SPP raiz: ACL TrustedInstaller. slmgr /ckms ya actuo." "DarkYellow" }
+                    } catch { Write-Log "   [DeKMS] HKLM SPP raiz: ACL bloqueada. slmgr /ckms ya actuo." "DarkYellow" }
                 }
             }
 
             Get-ChildItem $SPP -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
                 $p = Get-ItemProperty -LiteralPath $_.PSPath -ErrorAction SilentlyContinue
-                if ($null -ne $p -and $null -ne $p.KeyManagementServiceName) {
-                    if (Test-KMSValueIrregular $p.KeyManagementServiceName) {
+                if ($null -ne $p -and $null -ne $p.PSObject.Properties['KeyManagementServiceName']) {
+                    $kmsValChild = $p.PSObject.Properties['KeyManagementServiceName'].Value
+                    if (Test-KMSValueIrregular $kmsValChild) {
                         Remove-ItemProperty -LiteralPath $_.PSPath -Name "KeyManagementServiceName" -ErrorAction SilentlyContinue
                         Remove-ItemProperty -LiteralPath $_.PSPath -Name "KeyManagementServicePort" -ErrorAction SilentlyContinue
                         $cleaned++
@@ -844,8 +847,9 @@ try {
                 $hkuSPP = "HKU:\S-1-5-20\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform"
                 if (Test-Path $hkuSPP) {
                     $hkuRoot = Get-ItemProperty -LiteralPath $hkuSPP -ErrorAction SilentlyContinue
-                    if ($null -ne $hkuRoot -and $null -ne $hkuRoot.KeyManagementServiceName) {
-                        if (Test-KMSValueIrregular $hkuRoot.KeyManagementServiceName) {
+                    if ($null -ne $hkuRoot -and $null -ne $hkuRoot.PSObject.Properties['KeyManagementServiceName']) {
+                        $kmsValHku = $hkuRoot.PSObject.Properties['KeyManagementServiceName'].Value
+                        if (Test-KMSValueIrregular $kmsValHku) {
                             Remove-ItemProperty -LiteralPath $hkuSPP -Name "KeyManagementServiceName" -ErrorAction SilentlyContinue
                             Remove-ItemProperty -LiteralPath $hkuSPP -Name "KeyManagementServicePort" -ErrorAction SilentlyContinue
                             $cleaned++; Write-Log "   [DeKMS] Raiz HKU S-1-5-20 limpiada." "DarkGray"
@@ -853,8 +857,9 @@ try {
                     }
                     Get-ChildItem $hkuSPP -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
                         $p2 = Get-ItemProperty -LiteralPath $_.PSPath -ErrorAction SilentlyContinue
-                        if ($null -ne $p2 -and $null -ne $p2.KeyManagementServiceName) {
-                            if (Test-KMSValueIrregular $p2.KeyManagementServiceName) {
+                        if ($null -ne $p2 -and $null -ne $p2.PSObject.Properties['KeyManagementServiceName']) {
+                            $kmsValP2 = $p2.PSObject.Properties['KeyManagementServiceName'].Value
+                            if (Test-KMSValueIrregular $kmsValP2) {
                                 Remove-ItemProperty -LiteralPath $_.PSPath -Name "KeyManagementServiceName" -ErrorAction SilentlyContinue
                                 Remove-ItemProperty -LiteralPath $_.PSPath -Name "KeyManagementServicePort" -ErrorAction SilentlyContinue
                                 $cleaned++
@@ -1112,10 +1117,13 @@ try {
             foreach ($pkg in $pkgs) {
                 try   { $pkg | Remove-AppxPackage -AllUsers -ErrorAction Stop }
                 catch {
-                    $lf  = $using:LogFile
-                    $msg = "[$(Get-Date -f 'HH:mm:ss')] [WARN-Parallel] $($pkg.Name): $($_.Exception.Message -replace "`n"," ")"
-                    if ($lf) { Add-Content -LiteralPath $lf -Value $msg -Encoding UTF8 -ErrorAction SilentlyContinue }
-                    Write-Warning $msg
+                    # 0x80070032 = SystemApp protegida, no eliminable — silenciar
+                    if ($_.Exception.Message -notmatch "0x80070032") {
+                        $lf  = $using:LogFile
+                        $msg = "[$(Get-Date -f 'HH:mm:ss')] [WARN-Parallel] $($pkg.Name): $($_.Exception.Message -replace "`n"," ")"
+                        if ($lf) { Add-Content -LiteralPath $lf -Value $msg -Encoding UTF8 -ErrorAction SilentlyContinue }
+                        Write-Warning $msg
+                    }
                 }
             }
         } -ThrottleLimit 4
@@ -1429,7 +1437,7 @@ try {
             Write-Log "   Reseteando fuentes de winget (puede tardar 10-15s)..." "DarkGray"
             & winget source reset --force 2>&1 | Out-Null
             & winget source update 2>&1 | Out-Null
-            $apps = @("7zip.7zip", "PuTTY.PuTTY", "Notepad++.Notepad++", "Microsoft.Sysinternals", "Ghisler.TotalCommander")
+            $apps = @("7zip.7zip", "PuTTY.PuTTY", "Notepad++.Notepad++", "Microsoft.Sysinternals.Suite", "Ghisler.TotalCommander")
             if ($script:UseInstallWindhawk) { $apps += "RamenSoftware.Windhawk" }
             foreach ($app in $apps) {
                 Write-Log "   Instalando $app via winget..." "Yellow"
@@ -1441,6 +1449,8 @@ try {
                 } elseif ($proc.ExitCode -eq 3010) {
                     Write-Log "   $app instalado. Reinicio requerido (3010)." "Yellow"
                     $ctx.RebootRequired.Add("AdminTools")
+                } elseif ($proc.ExitCode -eq -1978335189) {
+                    Write-Log "   $app ya instalado y actualizado (sin upgrade disponible)." "DarkGray"
                 } elseif ($proc.ExitCode -ne 0) {
                     Write-Log "   [WARN] $app fallo (codigo $($proc.ExitCode))." "DarkYellow"
                 } else {
@@ -1450,7 +1460,8 @@ try {
         }
 
         # Features de red nativas (try/catch individual por robustez en builds que no las tienen)
-        $netFeatures = @("TelnetClient", "TFTPClient", "ClientForNFS-Infrastructure")
+        $netFeatures = @("TelnetClient", "ClientForNFS-Infrastructure")
+        if ($WinBuild -lt 26000) { $netFeatures += "TFTPClient" }  # E09: eliminada en builds 26xxx+
         $anyNetEnabled = $false
         foreach ($f in $netFeatures) {
             try {
