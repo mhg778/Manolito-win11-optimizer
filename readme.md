@@ -1,6 +1,5 @@
 #
 ```text
-
  ███╗   ███╗ █████╗ ██████╗  ██████╗ ██╗     ██╗████████╗ ██████╗ 
  ████╗ ████║██╔══██╗██╔══██╗██╔═══██╗██║     ██║╚══██╔══╝██╔═══██╗
  ██╔████╔██║███████║██║  ██║██║   ██║██║     ██║   ██║   ██║   ██║
@@ -8,14 +7,15 @@
  ██║ ╚═╝ ██║██║  ██║██║  ██║╚██████╔╝███████╗██║   ██║   ╚██████╔╝
  ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝   ╚═╝    ╚═════╝ 
 ──────────────────────────────────────────────────────────────────────
-              . . . Xciter . . . P R E S E N T S . . .
+ . . . Xciter . . . P R E S E N T S . . .
 
 Target OS  : Windows 11 Pro, Enterprise & Education (22000 - 26100+)
 Framework  : PowerShell 5.1 / 7.x (Multithreaded)
-Payload    : Manolito v2.4 - The Offline Armor Update
+Payload    : Manolito v2.5.5 - The Complete Update
 Protection : MS Telemetry, Cloud Identity, KMS Hijackers, Bloatware
+Tuning     : Bare-Metal Esports (MSI, NIC Nagle, Input Latency)
 ──────────────────────────────────────────────────────────────────────
-
+```
 //--[ I N F O ]------------------------------------------------------\\
 
 La telemetría no se negocia. El bloatware no se tolera.
@@ -31,8 +31,49 @@ Sin frameworks pesados de GUI. Sin dependencias. Sin fallos silenciosos.
 Ingeniería de sistemas pura basada en PowerShell, control de concurrencia y 
 auditoría estricta. Y por supuesto, sin pagar un duro...
 
-//--[ C O R E   P A Y L O A D S ]------------------------------------\\
 
+//--[ A R Q U I T E C T U R A   ( B a s e ) ]------------------------\\
+
+Manolito no es un simple script de debloat. Es un motor de 
+aprovisionamiento escrito en PowerShell puro, diseñado para entornos 
+corporativos, educativos y competitivos (Esports). 
+
+Destruye telemetría intrusiva (Recall/Copilot), aniquila tareas ocultas, 
+limpia secuestros KMS piratas, y reduce la latencia a nivel de hardware 
+interactuando directamente con el bus PCI-Express (MSITuning) y los 
+controladores de red físicos (NICTuning). 
+
+Todo ello con un sistema de auditoría matemática (Set-RegTracked) que 
+demuestra exactamente qué ha cambiado en tu PC post-ejecución.
+
+Sin binarios opacos. Sin telemetría propia. 100% auditable.
+
+//--[ C O R E   P A Y L O A D S   ( v 2 . 5 . 5 ) ]------------------\\
+
+[+] 1. Bare-Metal Esports (Baja Latencia)
+  * MSITuning   : Inyecta interrupciones MSI (Message Signaled Interrupts)
+                  con prioridad alta en GPU y NVMe. Aniquila el stuttering.
+  * NICTuning   : Apaga el algoritmo de Nagle (TcpAckFrequency/TCPNoDelay), 
+                  Flow Control y EEE cruzando IPs físicas. Ping mínimo.
+  * InputTuning : Fulmina la aceleración nativa de ratón y fuerza el
+                  KeyboardDelay a 0 absoluto.
+[+] 2. Enterprise Auditing (Trazabilidad)
+  * Set-RegTracked : Motor de inyección de registro interceptado. Lee el 
+                     estado Before/After y guarda el diferencial en RAM.
+  * -Verify        : Auditoría matemática post-ejecución. Demuestra qué 
+                     claves se han aplicado o bloqueado por el sistema.
+  * -Mode Check    : Escáner 100% pasivo (WMI/Registry) que exporta una tabla 
+                     ASCII con el estado de VBS, Nagle, Energía y Telemetría.
+[+] 3. Security & Core (Ciberseguridad)
+  * DisableVBS   : Inyección profunda que apaga la Seguridad Basada en 
+                   Virtualización (kernel) para rascar FPS (Solo Deep).
+  * AI Blocker   : Bloquea de raíz el análisis de IA de Microsoft (Recall) 
+                   anticipándose a las builds 26100+.
+  * WU Integrity : Instruye a Windows Update para aplicar parches de 
+                   seguridad pero NUNCA pisar los drivers de vídeo.
+[+] 4. Adaptive Interface (UX)
+  * Toggles CLI  : Sub-menú inteligente de despliegue en caliente para 
+                   controlar periféricos, DNS, o preservación de Xbox.
 + [!] Módulo OfflineOS: Blindaje total contra la identidad Cloud. Bloquea el
   Azure AD Join, fulmina los prompts de OOBE y fuerza la creación de cuentas
   locales mediante políticas restrictivas de sistema (NoMicrosoftAccount).
@@ -49,23 +90,44 @@ auditoría estricta. Y por supuesto, sin pagar un duro...
 + [!] Strict Architecture: Control de concurrencia (Mutex), gestión de estado 
   mediante try/finally y logs forenses consolidados en ejecución desatendida.
 
-//--[ U S A G E   &   D E P L O Y M E N T ]--------------------------\\
+//--[ M O D O S   D E   E J E C U C I Ó N ]------------------\\
 
-Lanzamiento directo desde consola (requiere privilegios de Administrador).
-Si tu entorno bloquea la ejecución, utiliza:
-`powershell.exe -ExecutionPolicy Bypass -File .\manolito.ps1`
+* [ DevEdu ] (Recomendado)
+  Equilibrio perfecto. Privacidad, sin telemetría, UI clásica. Conserva 
+  Xbox si usas -GamingMode. Ideal para desarrolladores y dual-booters 
+  (aplica RealTimeIsUniversal en hardware).
 
-* [ Modo Interactivo (GUI de consola retro + Toggles) ]
+* [ Deep ] (Agresivo)
+  Máxima limpieza para Gaming. Incluye purga de WinSxS (DISM /ResetBase), 
+  apaga Modern Standby y desactiva telemetría a nivel driver (NVIDIA).
+
+* [ Lite ] (Conservador)
+  Optimización mínima para oficinas. Limpia UI y telemetría básica, 
+  sin tocar discos, energía ni hardware.
+
+* [ Check ] (Auditoría Pasiva)
+  No escribe nada. Lee el WMI y el Registro y escupe una tabla ASCII con 
+  el estado de salud de tu VBS, Plan de Energía, Nagle y Telemetría.
+
+* [ Restore ] (Botón del Pánico)
+  Revierte servicios críticos, Windows Update, telemetría, DNS y RTC 
+  al estado por defecto de Microsoft.
+
+
+//--[ E J E M P L O S   D E   U S O   ( C L I ) ]------------\\
+
+* [ Menú Visual Interactivo (Recomendado para humanos) ]
   .\manolito.ps1 -Interactive
 
-* [ Despliegue Silencioso (Ideal para Intune / SCCM) ]
-  .\manolito.ps1 -Mode DevEdu -Skip AdminTools
+* [ Despliegue Gaming / Esports Desatendido con Auditoría ]
+  .\manolito.ps1 -Mode Deep -GamingMode -SetSecureDNS -Verify -Force
 
-* [ Modo Destructor (Limpieza DISM /ResetBase, Irreversible) ]
-  .\manolito.ps1 -Mode Deep -SetSecureDNS -InstallWindhawk
+* [ Despliegue Silencioso Sysadmin (Ideal para Intune / SCCM) ]
+  .\manolito.ps1 -Mode DevEdu -Skip AdminTools -Force
 
-* [ QA / Auditoría (Simulación sin escritura en disco/registro) ]
+* [ QA / Simulacro (No rompe nada, muestra Dry-Run logs) ]
   .\manolito.ps1 -Mode DevEdu -DryRun
+
 
 //--[ L E G A L   &   L I C E N S E   ( D U A L ) ]------------------\\
 
@@ -84,9 +146,4 @@ código fuente de cualquier ecosistema derivado en el que se integre.
 
 Si deseas utilizar Manolito de forma comercial en tu empresa SIN estar 
 sujeto a las obligaciones de la GPLv3 sobre tu propia propiedad intelectual, 
-debes adquirir una Licencia Comercial.
-
-Contacta con el autor a través de GitHub para consultar los planes de 
-Licenciamiento Comercial e integraciones Enterprise.
-──────────────────────────────────────────────────────────────────────
-[ EOF ] - Stay secure. Stay offline.
+debes adquirir una Licencia Comercial. Contacta con el autor.
