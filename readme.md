@@ -116,6 +116,10 @@ Sin binarios opacos. Sin telemetría propia. 100% auditable.
 
 //--[ E J E M P L O S   D E   U S O   ( C L I ) ]------------\\
 
+Lanzamiento directo desde consola (requiere privilegios de Administrador).
+Si tu entorno bloquea la ejecución, utiliza:
+powershell.exe -ExecutionPolicy Bypass -File .\manolito.ps1
+
 * [ Menú Visual Interactivo (Recomendado para humanos) ]
   .\manolito.ps1 -Interactive
 
