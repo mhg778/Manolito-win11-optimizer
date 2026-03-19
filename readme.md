@@ -92,6 +92,10 @@ Sin binarios opacos. Sin telemetría propia. 100% auditable.
 
 //--[ M O D O S   D E   E J E C U C I Ó N ]------------------\\
 
+* Lanzamiento directo desde consola (requiere privilegios de Administrador).
+  Si tu entorno bloquea la ejecución, utiliza:
+  powershell.exe -ExecutionPolicy Bypass -File .\manolito.ps1
+
 * [ DevEdu ] (Recomendado)
   Equilibrio perfecto. Privacidad, sin telemetría, UI clásica. Conserva 
   Xbox si usas -GamingMode. Ideal para desarrolladores y dual-booters 
@@ -115,10 +119,6 @@ Sin binarios opacos. Sin telemetría propia. 100% auditable.
 
 
 //--[ E J E M P L O S   D E   U S O   ( C L I ) ]------------\\
-
-Lanzamiento directo desde consola (requiere privilegios de Administrador).
-Si tu entorno bloquea la ejecución, utiliza:
-powershell.exe -ExecutionPolicy Bypass -File .\manolito.ps1
 
 * [ Menú Visual Interactivo (Recomendado para humanos) ]
   .\manolito.ps1 -Interactive
