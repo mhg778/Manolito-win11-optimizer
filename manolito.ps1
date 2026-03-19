@@ -6,7 +6,7 @@
  ██║ ╚═╝ ██║██║  ██║██║  ██║╚██████╔╝███████╗██║   ██║   ╚██████╔╝
  ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝   ╚═╝    ╚═════╝ 
                  [ Windows 11 Enterprise Provisioning ]
-                 [ v2.5.4 - The Offline Armor Update  ]
+                 [ v2.5.5 - The Offline Armor Update  ]
 .COPYRIGHT
     Copyright (c) 2026 Manolito Project Contributors. Todos los derechos reservados.
 
