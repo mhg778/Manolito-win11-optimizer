@@ -15,7 +15,7 @@ Framework  : PowerShell 5.1 (WPF Asynchronous + Runspaces)
 Payload    : The Data-Driven Armor Update
 Protection : MS Telemetry, Cloud Identity, KMS Hijackers, Bloatware
 ──────────────────────────────────────────────────────────────────────
-
+![Interfaz de Manolito v2.7](manolito-ui.png)
 //--[ I N F O ]------------------------------------------------------\
 
 La telemetría no se tolera. El bloatware no se consiente.
