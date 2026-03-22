@@ -80,7 +80,7 @@ mismo directorio. Se requieren privilegios de Administrador.
 Para evadir las políticas de restricción de ejecución en tu entorno:
 powershell.exe -ExecutionPolicy Bypass -File .\manolito.ps1
 
-📖  CONSULTA EL MANUAL DE USUARIO COMPLETO AQUÍ 
+📖  Consulta el [Manual Técnico de Operación y Arquitectura](docs/manual.md).
 Detalles sobre cómo añadir tus propios Payloads al JSON, explicación de
 los Runlevels y guía de Restauración mediante Manifests.
 
