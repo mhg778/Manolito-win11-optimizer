@@ -957,7 +957,7 @@ $html = @"
 # 4. INTERFAZ GRÁFICA (XAML CYBERPUNK) - DISEÑO GRID RESPONSIVO
 # ========================================================================
 $xaml = @"
-<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Title="Manolito v2.7.0" Height="800" Width="1000" WindowStyle="None" AllowsTransparency="True" WindowStartupLocation="CenterScreen" FontFamily="Consolas">
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Title="Manolito v2.7.1" Height="800" Width="1000" WindowStyle="None" AllowsTransparency="True" WindowStartupLocation="CenterScreen" FontFamily="Consolas">
     <Window.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="#08001A" Offset="0"/>
