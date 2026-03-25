@@ -4,7 +4,7 @@ color 0A
 
 :: ======================================================
 :: 1. DEFINIR LA FIRMA DIGITAL
-set "EXPECTED_HASH=9425AE7138CE43F1CFF9BC030504879CA3D58C071A99EB0B840F91445E92BC7F"
+set "EXPECTED_HASH=2B5B85F2B1C59BD5B3BB0325E4DDA901D618861D3E8753772A57450803682ABD"
 :: ======================================================
 
 set "PS1_FILE=%~dp0manolito.ps1"
