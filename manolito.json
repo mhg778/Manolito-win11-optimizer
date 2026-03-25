@@ -1,17 +1,17 @@
 {
   "Manifest": {
-    "Version": "2.7.0",
+    "Version": "2.7.1",
     "Author": "Xciter",
     "TargetOS": "Windows 11 (Build 22000+)",
-    "Description": "Core data definitions for Manolito Engine v2.7"
+    "Description": "Core data definitions for Manolito Engine v2.7.1 (Armor Update)"
   },
 
   "UIMapping": {
     "Runlevels": {
-      "Lite":     { "Label": "[01] LITE",     "Color": "#FF2079", "Desc": "Oficina Segura",     "Payloads": ["PurgeAppx", "DisableBasicTelemetry", "DisableCopilot"] },
-      "DevEdu":   { "Label": "[02] DEV-EDU",  "Color": "#00FFFF", "Desc": "Dual / Recomendado", "Payloads": ["PurgeAppx", "DisableBasicTelemetry", "DisableCopilot", "NetworkOptimize", "DisableEdgeSpam", "PrivacyHarden", "DeKMS", "BlockHostsTelemetry"] },
-      "Deep":     { "Label": "[03] DEEP OP",  "Color": "#FF2222", "Desc": "Gaming Extremo",     "Payloads": ["PurgeAppx", "DisableBasicTelemetry", "DisableCopilot", "NetworkOptimize", "DisableEdgeSpam", "PrivacyHarden", "DeKMS", "InputTuning", "MSITuning", "DisableVBS", "BlockHostsTelemetry", "KillActiveSetup"] },
-      "Rollback": { "Label": "[04] ROLLBACK", "Color": "#BF00FF", "Desc": "Restaurar Sistema",  "Payloads": ["DisableBasicTelemetry", "DisableCopilot", "NetworkOptimize", "DisableEdgeSpam", "PrivacyHarden", "InputTuning", "DisableVBS", "BlockHostsTelemetry", "KillActiveSetup"] }
+      "Lite":     { "Label": "[01] LITE",     "Color": "#FF2079", "Desc": "Oficina Segura",     "Payloads": ["PurgeAppx", "DisableBasicTelemetry", "DisableCopilot", "TaskbarLeft", "ExplorerUI"] },
+      "DevEdu":   { "Label": "[02] DEV-EDU",  "Color": "#00FFFF", "Desc": "Dual / Recomendado", "Payloads": ["PurgeAppx", "DisableBasicTelemetry", "DisableCopilot", "TaskbarLeft", "ExplorerUI", "NetworkOptimize", "DisableEdgeSpam", "PrivacyHarden", "DeKMS", "BlockHostsTelemetry", "SSDTuning", "UpdateDefenderTuning"] },
+      "Deep":     { "Label": "[03] DEEP OP",  "Color": "#FF2222", "Desc": "Gaming Extremo",     "Payloads": ["PurgeAppx", "DisableBasicTelemetry", "DisableCopilot", "TaskbarLeft", "ExplorerUI", "NetworkOptimize", "DisableEdgeSpam", "PrivacyHarden", "DeKMS", "InputTuning", "MSITuning", "DisableVBS", "BlockHostsTelemetry", "KillActiveSetup", "SSDTuning", "UpdateDefenderTuning", "PowerTuning"] },
+      "Rollback": { "Label": "[04] ROLLBACK", "Color": "#BF00FF", "Desc": "Restaurar Sistema",  "Payloads": ["DisableBasicTelemetry", "DisableCopilot", "TaskbarLeft", "ExplorerUI", "NetworkOptimize", "DisableEdgeSpam", "PrivacyHarden", "InputTuning", "DisableVBS", "BlockHostsTelemetry", "KillActiveSetup", "SSDTuning", "UpdateDefenderTuning", "PowerTuning"] }
     }
   },
 
@@ -77,6 +77,13 @@
       ]
     },
 
+    "TaskbarLeft": {
+      "_meta": { "Label": "Alineacion Taskbar (Izquierda)", "Risk": "SAFE", "Reversible": true, "RequiresReboot": false, "Description": "Alinea el menu de inicio de Windows 11 a la izquierda." },
+      "Registry": [
+        { "Path": "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "Name": "TaskbarAl", "Type": "DWord", "TargetValue": 0, "RestoreValue": 1 }
+      ]
+    },
+
     "NetworkOptimize": {
       "_meta": { "Label": "Optimizar Red (Nagle OFF + DNS Cloudflare)", "Risk": "MOD", "Reversible": true, "RequiresReboot": false, "Description": "Desactiva Nagle por interfaz activa y aplica DNS Cloudflare." },
       "NagleTemplate": [
@@ -139,7 +146,7 @@
       ]
     },
 
-"DisableVBS": {
+    "DisableVBS": {
       "_meta": { "Label": "Deshabilitar VBS/HVCI (Kernel)", "Risk": "MOD", "Reversible": true, "RequiresReboot": true, "Description": "Desactiva VBS. Aumenta superficie de ataque. Solo equipos standalone." },
       "Registry": [
         { "Path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard",                                             "Name": "EnableVirtualizationBasedSecurity", "Type": "DWord", "TargetValue": 0, "RestoreValue": 1 },
@@ -152,58 +159,79 @@
     },
 
     "BlockHostsTelemetry": {
-      "_meta": {
-        "Label": "Bloquear HOSTS Telemetria",
-        "Risk": "MOD",
-        "Reversible": true,
-        "RequiresReboot": false,
-        "Description": "Redirige dominios de telemetria Microsoft a 0.0.0.0 via HOSTS. Backup automatico de sesion."
-      },
+      "_meta": { "Label": "Bloquear HOSTS Telemetria", "Risk": "MOD", "Reversible": true, "RequiresReboot": false, "Description": "Redirige dominios de telemetria Microsoft a 0.0.0.0 via HOSTS." },
       "HostsEntries": [
-        "vortex.data.microsoft.com",
-        "vortex-win.data.microsoft.com",
-        "telecommand.telemetry.microsoft.com",
-        "oca.telemetry.microsoft.com",
-        "sqm.telemetry.microsoft.com",
-        "watson.telemetry.microsoft.com",
-        "redir.metaservices.microsoft.com",
-        "choice.microsoft.com",
-        "df.telemetry.microsoft.com",
-        "reports.wes.df.telemetry.microsoft.com",
-        "telemetry.microsoft.com",
-        "watson.ppe.telemetry.microsoft.com",
-        "telemetry.appex.bing.net",
-        "telemetry.urs.microsoft.com",
-        "settings-sandbox.data.microsoft.com",
-        "survey.watson.microsoft.com",
-        "watson.live.com",
-        "watson.microsoft.com",
-        "statsfe2.ws.microsoft.com",
-        "feedback.windows.com",
-        "feedback.microsoft-hohm.com",
-        "feedback.search.microsoft.com",
-        "i1.services.social.microsoft.com",
-        "pre.footprintpredict.com"
+        "vortex.data.microsoft.com", "vortex-win.data.microsoft.com", "telecommand.telemetry.microsoft.com",
+        "oca.telemetry.microsoft.com", "sqm.telemetry.microsoft.com", "watson.telemetry.microsoft.com",
+        "redir.metaservices.microsoft.com", "choice.microsoft.com", "df.telemetry.microsoft.com",
+        "reports.wes.df.telemetry.microsoft.com", "telemetry.microsoft.com", "watson.ppe.telemetry.microsoft.com",
+        "telemetry.appex.bing.net", "telemetry.urs.microsoft.com", "settings-sandbox.data.microsoft.com",
+        "survey.watson.microsoft.com", "watson.live.com", "watson.microsoft.com", "statsfe2.ws.microsoft.com",
+        "feedback.windows.com", "feedback.microsoft-hohm.com", "feedback.search.microsoft.com",
+        "i1.services.social.microsoft.com", "pre.footprintpredict.com"
       ]
     },
 
     "KillActiveSetup": {
-      "_meta": {
-        "Label": "Active Setup Killer",
-        "Risk": "MOD",
-        "Reversible": true,
-        "RequiresReboot": false,
-        "Description": "Elimina entradas Active Setup legacy que re-ejecutan setup en cada login. Backup de sesion incluido."
-      },
+      "_meta": { "Label": "Active Setup Killer", "Risk": "MOD", "Reversible": true, "RequiresReboot": false, "Description": "Elimina entradas Active Setup legacy que re-ejecutan setup en cada login." },
       "ActiveSetupEntries": [
-        "{89820200-ECBD-11cf-8B85-00AA005B4383}",
-        "{89820200-ECBD-11cf-8B85-00AA005B4340}",
-        "{22d6f312-b0f6-11d0-94ab-0080c74c7e95}",
-        "{6BF52A52-394A-11d3-B153-00C04F79FAA6}",
-        "{44BBA840-CC51-11CF-AAFA-00AA00B6015C}",
-        "{7790769C-0471-11d2-AF11-00C04FA35D02}",
-        "{9381D8F2-0288-11D0-9501-00AA00B911A5}",
-        "{C9E9A340-D1F1-11D0-821E-444553540600}"
+        "{89820200-ECBD-11cf-8B85-00AA005B4383}", "{89820200-ECBD-11cf-8B85-00AA005B4340}",
+        "{22d6f312-b0f6-11d0-94ab-0080c74c7e95}", "{6BF52A52-394A-11d3-B153-00C04F79FAA6}",
+        "{44BBA840-CC51-11CF-AAFA-00AA00B6015C}", "{7790769C-0471-11d2-AF11-00C04FA35D02}",
+        "{9381D8F2-0288-11D0-9501-00AA00B911A5}", "{C9E9A340-D1F1-11D0-821E-444553540600}"
+      ]
+    },
+
+    "SSDTuning": {
+      "_meta": { "Label": "Afinamiento SSD (Prefetch & NTFS)", "Risk": "MOD", "Reversible": true, "RequiresReboot": true, "Description": "Desactiva SysMain, Prefetcher y optimiza tiempos de acceso NTFS." },
+      "Services": [
+        { "Name": "SysMain", "TargetState": "Disabled", "RestoreState": "Automatic" }
+      ],
+      "Registry": [
+        { "Path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\\PrefetchParameters", "Name": "EnablePrefetcher", "Type": "DWord", "TargetValue": 0, "RestoreValue": 3 },
+        { "Path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\\PrefetchParameters", "Name": "EnableSuperfetch", "Type": "DWord", "TargetValue": 0, "RestoreValue": 3 },
+        { "Path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\FileSystem", "Name": "NtfsDisable8dot3NameCreation", "Type": "DWord", "TargetValue": 1, "RestoreValue": 0 },
+        { "Path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\FileSystem", "Name": "NtfsDisableLastAccessUpdate", "Type": "DWord", "TargetValue": 1, "RestoreValue": 0 },
+        { "Path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\FileSystem", "Name": "LongPathsEnabled", "Type": "DWord", "TargetValue": 1, "RestoreValue": 0 }
+      ]
+    },
+
+    "PowerTuning": {
+      "_meta": { "Label": "Kernel y Red (MMCSS Tuning)", "Risk": "MOD", "Reversible": true, "RequiresReboot": true, "Description": "Elimina limite de red multimedia, ajusta prioridad CPU y quita hibernacion." },
+      "Registry": [
+        { "Path": "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile", "Name": "SystemResponsiveness", "Type": "DWord", "TargetValue": 0, "RestoreValue": 20 },
+        { "Path": "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile", "Name": "NetworkThrottlingIndex", "Type": "DWord", "TargetValue": 4294967295, "RestoreValue": 10 },
+        { "Path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl", "Name": "Win32PrioritySeparation", "Type": "DWord", "TargetValue": 38, "RestoreValue": 2 },
+        { "Path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Power", "Name": "HibernateEnabled", "Type": "DWord", "TargetValue": 0, "RestoreValue": 1 }
+      ]
+    },
+
+    "ExplorerUI": {
+      "_meta": { "Label": "Acelerar Explorador y Apagados", "Risk": "SAFE", "Reversible": true, "RequiresReboot": false, "Description": "Acelera cierre de apps colgadas, muestra extensiones y limpia Buscador UI." },
+      "Registry": [
+        { "Path": "HKCU:\\Control Panel\\Desktop", "Name": "WaitToKillAppTimeout", "Type": "String", "TargetValue": "5000", "RestoreValue": "20000" },
+        { "Path": "HKCU:\\Control Panel\\Desktop", "Name": "HungAppTimeout", "Type": "String", "TargetValue": "3000", "RestoreValue": "5000" },
+        { "Path": "HKCU:\\Control Panel\\Desktop", "Name": "AutoEndTasks", "Type": "String", "TargetValue": "1", "RestoreValue": "0" },
+        { "Path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control", "Name": "WaitToKillServiceTimeout", "Type": "String", "TargetValue": "5000", "RestoreValue": "5000" },
+        { "Path": "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "Name": "LaunchTo", "Type": "DWord", "TargetValue": 1, "RestoreValue": 2 },
+        { "Path": "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "Name": "HideFileExt", "Type": "DWord", "TargetValue": 0, "RestoreValue": 1 },
+        { "Path": "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "Name": "ShowSuperHidden", "Type": "DWord", "TargetValue": 0, "RestoreValue": 0 },
+        { "Path": "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "Name": "NavPaneExpandToCurrentFolder", "Type": "DWord", "TargetValue": 1, "RestoreValue": 0 },
+        { "Path": "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects", "Name": "VisualFXSetting", "Type": "DWord", "TargetValue": 2, "RestoreValue": 3 },
+        { "Path": "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Search", "Name": "BingSearchEnabled", "Type": "DWord", "TargetValue": 0, "RestoreValue": 1 },
+        { "Path": "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Search", "Name": "SearchboxTaskbarMode", "Type": "DWord", "TargetValue": 1, "RestoreValue": 1 },
+        { "Path": "HKCU:\\Software\\Policies\\Microsoft\\Windows\\Explorer", "Name": "DisableSearchBoxSuggestions", "Type": "DWord", "TargetValue": 1, "RestoreValue": 0 }
+      ]
+    },
+
+    "UpdateDefenderTuning": {
+      "_meta": { "Label": "Update & Defender (Proteccion)", "Risk": "MOD", "Reversible": true, "RequiresReboot": false, "Description": "Evita reinicios forzados, protege drivers de video y frena envio de muestras." },
+      "Registry": [
+        { "Path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU", "Name": "AUOptions", "Type": "DWord", "TargetValue": 3, "RestoreValue": 0 },
+        { "Path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU", "Name": "NoAutoRebootWithLoggedOnUsers", "Type": "DWord", "TargetValue": 1, "RestoreValue": 0 },
+        { "Path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate", "Name": "ExcludeWUDriversInQualityUpdate", "Type": "DWord", "TargetValue": 1, "RestoreValue": 0 },
+        { "Path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Spynet", "Name": "SpynetReporting", "Type": "DWord", "TargetValue": 0, "RestoreValue": 2 },
+        { "Path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Spynet", "Name": "SubmitSamplesConsent", "Type": "DWord", "TargetValue": 2, "RestoreValue": 1 }
       ]
     }
   }
