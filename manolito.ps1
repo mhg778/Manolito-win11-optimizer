@@ -1,10 +1,10 @@
-<#
+﻿<#
 .SYNOPSIS
-    Manolito Engine v2.7.0 - Bare-Metal Tweaking & Sysadmin Toolkit (GitHub Release)
+    Manolito Engine v2.7.1 - Bare-Metal Tweaking & Sysadmin Toolkit (GitHub Release)
 .DESCRIPTION
     Motor de ejecución guiado por datos (manolito.json) con interfaz interactiva.
 .AUTHOR
-    Xciter
+    Xciter (con soporte de IA)
 #>
 
 #Requires -RunAsAdministrator
@@ -652,6 +652,42 @@ function ConvertTo-NativeHashtable {
     return $obj
 }
 
+# 1. Filtrar payloads IRR del plan actual (Sintaxis PS5.1 segura)
+        $irrPayloads = @()
+        foreach ($p in $script:plan) {
+            $node = $script:Config.Payloads.$p
+            if ($null -ne $node -and $null -ne $node._meta -and $node._meta.Risk -eq 'IRR') {
+                $irrPayloads += $p
+            }
+        }
+
+        # 2. Mostrar advertencia si hay IRRs y NO estamos en DryRun
+        if ($irrPayloads.Count -gt 0 -and -not $script:ctx.Runtime.IsDryRun) {
+            $irrList = ($irrPayloads | ForEach-Object {
+                $label = $script:Config.Payloads.$_._meta.Label
+                "  [!] $_ — $label"
+            }) -join "`n"
+            
+            $msg = "ATENCION — Las siguientes acciones son IRREVERSIBLES:`n`n$irrList`n`n" +
+                   "No se pueden deshacer ni con el modo ROLLBACK ni con Manifest Restore.`n`n" +
+                   "¿Confirmas que quieres continuar bajo tu propia responsabilidad?"
+                   
+            $confirm = [System.Windows.MessageBox]::Show(
+                $msg,
+                'ALERTA DE SEGURIDAD',
+                [System.Windows.MessageBoxButton]::YesNo,
+                [System.Windows.MessageBoxImage]::Warning
+            )
+            
+            if ($confirm -ne [System.Windows.MessageBoxResult]::Yes) {
+                $txtConsole.Text += "`n> [ABORT] Despliegue cancelado por el usuario para proteger el sistema."
+                $btnDeploy.IsEnabled = $true
+                $btnDeploy.Background = '#FF2079'
+                $script:IsRunning = $false
+                return
+            }
+        }
+
 # ─── M5: Motor asíncrono real mediante Runspaces ────────────────────────────
 function Start-ManolitoRunspace {
     param(
@@ -918,7 +954,7 @@ $html = @"
 }
 
 # ========================================================================
-# 4. INTERFAZ GRÁFICA - DISEÑO GRID RESPONSIVO
+# 4. INTERFAZ GRÁFICA (XAML CYBERPUNK) - DISEÑO GRID RESPONSIVO
 # ========================================================================
 $xaml = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Title="Manolito v2.7.0" Height="800" Width="1000" WindowStyle="None" AllowsTransparency="True" WindowStartupLocation="CenterScreen" FontFamily="Consolas">
@@ -993,8 +1029,7 @@ $xaml = @"
                     <ProgressBar Name="pbProgress" Height="3" Background="#111" Foreground="#FF2079" BorderThickness="0" Margin="0,5,20,0"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <CheckBox Name="chkDryRun" Content="[ DRY-RUN ]" Foreground="#FFB000"
-                              FontWeight="Bold" Margin="0,0,20,0" VerticalAlignment="Center" IsChecked="True"/>
+					<CheckBox Name="chkDryRun" Content="DRY RUN" IsChecked="True" Foreground="#00FFFF" FontWeight="Bold" Margin="0,0,20,0" VerticalAlignment="Center" />
                     <Button Name="btnSaveProfile" Content="GUARDAR"  Foreground="#00FFFF"
                             BorderBrush="#00FFFF" ToolTip="Guardar checkboxes actuales como perfil"/>
                     <Button Name="btnLoadProfile" Content="CARGAR"   Foreground="#FFB000"
@@ -1347,7 +1382,8 @@ $btnDeploy.Add_Click({
             $btnDeploy.IsEnabled  = $true
             
             $script:ctx.Runtime.IsManifestRestore = $false
-            
+       		$txtConsole.Text += "`n> [INFO] Revisa el informe HTML antes de reiniciar: $htmlOut"
+			$txtConsole.Text += "`n> [INFO] Transcript completo en: $(Join-Path $script:DOCSMANOLITO 'transcript*.txt')"
             Beep-UI 'boot'
         }
     })
