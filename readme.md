@@ -1,5 +1,5 @@
 # Manolito v2.8.0
-
+```text
  ███╗   ███╗ █████╗ ███╗  ██╗ ██████╗ ██╗     ██╗████████╗ ██████╗ 
  ████╗ ████║██╔══██╗████╗ ██║██╔═══██╗██║     ██║╚══██╔══╝██╔═══██╗
  ██╔████╔██║███████║██╔██╗██║██║   ██║██║     ██║   ██║   ██║   ██║
@@ -14,9 +14,9 @@ Framework  : PowerShell 5.1 (WPF Asynchronous + Runspaces)
 Payload    : The Engine Update (Data-Driven Architecture)
 Protection : MS Telemetry, Cloud Identity, KMS Hunter, Bloatware
 ──────────────────────────────────────────────────────────────────────
-
+```
 ![Manolito UI Hero](assets/manolito-ui.png)
-
+```text
 //--[ I N F O ]------------------------------------------------------\
 
 Manolito ha evolucionado de un script de limpieza a un Framework de 
@@ -38,9 +38,9 @@ con recursos drásticamente reducidos:
 * **Consumo Base**: Reducción del uso de memoria hasta los **1.1 GB**.
 * **CPU Idle**: Uso de procesador estabilizado entre el **0% y el 7%**.
 * **Matrix Bug**: La purga es tan profunda que el sistema reporta **0.0 PB** de reserva para hardware.
-
+```
 ![Windows 11 2GB Milestone](assets/win11_2gb.jpg)
-
+```text
 //--[ C O R E   A R C H I T E C T U R E ]----------------------------\
 
     [!] Zero-Lag WPF UI: Interfaz asíncrona construida sobre Runspaces 
@@ -70,9 +70,9 @@ Lanzamiento con bypass de política:
 `powershell.exe -ExecutionPolicy Bypass -File .\manolito.ps1`
 
 O siemplemente haz click en el .bat...
-
+```
 ![Execution Animation](assets/Animation.gif)
-
+```text
 //--[ U S A G E & D O C U M E N T A T I O N ]--------------------\
 
 El motor requiere la presencia de manolito.ps1 y manolito.json en el mismo directorio.
