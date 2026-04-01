@@ -8,7 +8,7 @@ ______________________________________________________________________
 |  ██║ ╚═╝ ██║██║  ██║██║ ╚███║╚██████╔╝███████╗██║   ██║   ╚██████╔╝  |
 |  ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚══╝ ╚═════╝ ╚══════╝╚═╝   ╚═╝    ╚═════╝   |
 |______________________________________________________________________|
- [ GUIA DE USUARIO FINAL ] - [ v2.8.0 THE ENGINE UPDATE ]
+ [ GUIA DE USUARIO FINAL ] - [ v2.8.1 THE ENGINE UPDATE ]
 ```
 
  //--[ 01. ¿QUE ES MANOLITO ENGINE? ]--------------------------------\
@@ -38,17 +38,17 @@ ______________________________________________________________________
 
  //--[ 04. NIVELES OPERATIVOS (RUNLEVELS) ]--------------------------\
 
- El sistema clasifica las cargas útiles en 4 niveles de riesgo:
+ El sistema clasifica las cargas útiles en 5 niveles de riesgo:
 
- [*] 🟢 [01] LITE: Purga de Bloatware esencial y telemetría básica.
- [*] 🔵 [02] DEV-EDU: El estándar para entornos de trabajo. Añade 
-     optimización de red (DNS Cloudflare/Nagle OFF) y el módulo 
-     DeKMS contra activadores piratas.
- [*] 🔴 [03] DEEP OP: Configuración extrema para alto rendimiento. 
-     Afinamiento de latencia (Input Lag), activación MSI y apagado 
-     de protecciones de Kernel (VBS/HVCI).
- [*] 🟣 [04] ROLLBACK: Modo de emergencia. Revierte las opciones a 
-     su estado de fábrica definido en el JSON.
+* 🟢 **[01] LITE**: Elimina Bloatware esencial y telemetría básica.
+* 🔵 **[02] DEV-EDU**: Optimiza redes, elimina publicidad y limpia restos
+			de activadores KMS.
+* 🔴 **[03] DEEP OP**: Sintonía fina de latencia (Input Lag), activación
+			MSI en GPU/NVMe y desactivación de VBS.
+* 🟣 **[04] ROLLBACK**: Reversión granular a valores de fábrica.
+* 🟠 **[05] NVME FIX**: Tuning crítico exclusivo para almacenamiento sólido
+			(EnableNativeNVMe, ExtendNVMeHMB, DisableNVMeWriteCache). Solo 
+			se activa con hardware NVMe físico detectado.
 
  //--[ 05. PANEL DE CONTROL Y TELEMETRIA DE INTERFAZ ]---------------\
 
@@ -86,4 +86,4 @@ ______________________________________________________________________
 
  TOCA COSAS SERIAS. ÚSALO BAJO TU PROPIA RESPONSABILIDAD.
 ──────────────────────────────────────────────────────────────────────
- [ EOF ] - Manolito v2.8.0 - Stay secure. Stay light.
+ [ EOF ] - Manolito v2.8.1 - Stay secure. Stay light.
